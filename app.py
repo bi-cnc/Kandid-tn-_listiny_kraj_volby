@@ -50,8 +50,10 @@ data['Title'] = data['Title'].replace(r'nan', '', regex=True)
 data['Title'] = data['Title'].str.replace(r'^, | ,$', '', regex=True)
 
 
-
 ####### Streamlit #########
+
+import streamlit as st
+import pandas as pd
 
 # Inicializace session state pro text input
 if 'text_input' not in st.session_state:
@@ -66,6 +68,7 @@ search_name = st.text_input('Hledat podle příjmení', value=st.session_state.t
 # Pokud je zadán nový vyhledávací dotaz, aktualizujte session state
 if search_name != st.session_state.text_input:
     st.session_state.text_input = search_name
+    st.experimental_rerun()  # Zajistí, že nový výraz bude okamžitě vyhledán
 
 # Načtení dat podle aktuálního vyhledávacího dotazu
 if st.session_state.text_input:
@@ -81,6 +84,7 @@ else:
 if st.session_state.text_input:
     if st.button("Zpět"):
         st.session_state.text_input = ''  # Vymazání session state
+        st.experimental_rerun()  # Obnovení stránky pro vymazání vyhledávacího pole
 
 # Checkbox to show only leaders (zobrazí pouze kandidáty s PORCISLO rovno 1)
 show_leaders_only = st.checkbox('Zobrazit pouze lídry')
