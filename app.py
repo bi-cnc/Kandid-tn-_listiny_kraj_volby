@@ -1,28 +1,15 @@
 
 import pandas as pd
-import os
-
-# Definujte cestu jako proměnnou
-cesta = "/Users/alesligas/Library/CloudStorage/GoogleDrive-ales.ligas@cncenter.cz/Ostatní počítače/Můj notebook/projekty/Krajské a senátní volby 2024/krajské/data"
-
-# Nastavte tuto cestu jako aktuální pracovní adresář
-os.chdir(cesta)
+import numpy as np
+import streamlit as st
 
 # Registracni listiny a kandidati
-kzrk = pd.read_excel(os.path.join(cesta, 'KZ2024reg20240807_xlsx', 'kzrk.xlsx'))
-kzrkl = pd.read_excel(os.path.join(cesta, 'KZ2024reg20240807_xlsx', 'kzrkl.xlsx'))
-kzrkl_s = pd.read_excel(os.path.join(cesta, 'KZ2024reg20240807_xlsx', 'kzrkl_s.xlsx'))
-kzrkl_slozeni = pd.read_excel(os.path.join(cesta, 'KZ2024reg20240807_xlsx', 'kzrkl_slozeni.xlsx'))
+kzrk = pd.read_excel('kzrk.xlsx')
+kzrkl_s = pd.read_excel('kzrkl_s.xlsx')
 
 # ciselniky
-cisob = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cisob.xlsx'))
-cns = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cns.xlsx'))
-cnumnuts = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cnumnuts.xlsx'))
-cpp = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cpp.xlsx'))
-cvs_slozeni = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cvs_slozeni.xlsx'))
-cvs = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'cvs.xlsx'))
-kzciskr = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'kzciskr.xlsx'))
-kzcoco = pd.read_excel(os.path.join(cesta, 'KZ2024ciselniky20240807_xlsx', 'kzcoco.xlsx'))
+cpp = pd.read_excel('cpp.xlsx')
+kzciskr = pd.read_excel('kzciskr.xlsx')
 
 kzrk = kzrk.merge(kzciskr,on="KRZAST")
 kzrk = kzrk.merge(kzrkl_s,on="KSTRANA")
@@ -31,8 +18,6 @@ kzrk = kzrk.merge(cpp,on="PSTRANA")
 kzrk.sort_values(["NAZEVKRZ","KSTRANA"],inplace=True)
 kzrk["KSTRANA"] = kzrk["KSTRANA"].astype(str)
 kzrk["ZKRATKAK8"] = kzrk["KSTRANA"] + " - " + kzrk["ZKRATKAK8"]
-
-kzrk.info()
 
 data = kzrk[["PORCISLO","NAZEVKRZ","NAZEVPLNY","JMENO","PRIJMENI","TITULPRED","TITULZA","VEK","POVOLANI","BYDLISTEN","ZKRATKAK8","ZKRATKAP8"]]
 data["JMENO"] = data["JMENO"].astype(str)
@@ -44,12 +29,6 @@ data["TITULPRED"] = data["TITULPRED"].astype(str)
 data["TITULZA"] = data["TITULZA"].astype(str)
 
 data["Title"] = data["TITULPRED"] + ", " + data["TITULZA"]
-
-
-import numpy as np
-
-# Předpokládejme, že 'Title' je sloupec, ve kterém chcete odstranit ", nan", "nan" a ", " pokud neexistuje titul
-# Tento kód byste použili po načtení a filtrování dat
 
 # Pokud sloupec obsahuje skutečné NaN hodnoty, převeďte je na prázdný řetězec
 data['Title'] = data['Title'].fillna('')
@@ -71,12 +50,8 @@ data['Title'] = data['Title'].replace(r'nan', '', regex=True)
 data['Title'] = data['Title'].str.replace(r'^, | ,$', '', regex=True)
 
 
-data.info()
 
 ####### Streamlit #########
-
-import streamlit as st
-import pandas as pd
 
 # Inicializace session state pro text input
 if 'text_input' not in st.session_state:
