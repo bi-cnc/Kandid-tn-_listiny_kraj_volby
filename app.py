@@ -34,7 +34,7 @@ data["Title"] = data["TITULPRED"] + ", " + data["TITULZA"]
 data['Title'] = data['Title'].fillna('')
 
 # Odstraňte řetězec ", nan" z každé hodnoty ve sloupci 'Title'
-data['Title'] = data['Title'].str.replace(', nan', '', regex=False)
+data.loc[:, 'Title'] = data['Title'].str.replace(r'^, | ,$', '', regex=True)
 
 # Nahradí každý výskyt "nan" samotný prázdným řetězcem
 data['Title'] = data['Title'].replace('nan', '')
